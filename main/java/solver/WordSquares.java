@@ -10,11 +10,12 @@ import java.util.List;
 
 public class WordSquares {
     private final int size;
+    private final String letters;
 
     private List<String> horizontal;
     private List<String> vertical;
     private List<String> allWords;
-    private String letters;
+
     List<String> result = new LinkedList<>();
 
     public List<String> getVertical() {
@@ -27,7 +28,7 @@ public class WordSquares {
 
     public WordSquares(int size, String letters) {
         this.letters = letters;
-        allWords = wordListFilter(letters, size);
+        allWords = readWordList(letters, size);
         this.size = size;
         this.horizontal = new ArrayList<>(size);
         this.vertical = new ArrayList<>(size);
@@ -36,7 +37,7 @@ public class WordSquares {
         }
     }
 //creates empty arrays when wordsquare object is created
-    public List<String> firstWords() {
+    public List<String> chooseFirstWord() {
         for (String word : allWords) {
             //     Integer columnNumber = 0;
             solver(0);
@@ -53,12 +54,12 @@ public class WordSquares {
             return;
         }
 //returns when the arraylist is equal to the size
-        for (String filteredWord : listOfWords(columnNumber, allWords)) {
-            updateHorizontal(filteredWord);
-            updateVertical();
+        for (String filteredWord : listOfPossibleWords(columnNumber, allWords)) {
+            addWordToSquare(filteredWord);
+            updateWordBeginnings();
             solver(columnNumber + 1);
             horizontal.remove(horizontal.size() - 1);
-            updateVertical();
+            updateWordBeginnings();
         }
     }
     //filters the list of words
@@ -74,8 +75,7 @@ public class WordSquares {
         return Arrays.equals(wordArray, initialStringArray);
     }
 //checks if the letters match starting letters
-
-    public void updateVertical() {
+    public void updateWordBeginnings() {
         for (int i = 0; i < size; i++) {
             vertical.set(i, "");
         }
@@ -85,12 +85,11 @@ public class WordSquares {
             }
         }
     }
-
-    public void updateHorizontal(String word) {
+    public void addWordToSquare(String word) {
         horizontal.add(word);
     }
 
-    public static List<String> wordListFilter(String letters, int size) {
+    public static List<String> readWordList(String letters, int size) {
         List<String> wordsFiltered = new ArrayList<>(size);
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/dictionary.txt"))) {
             String line;
@@ -109,7 +108,7 @@ public class WordSquares {
         return (wordToCheck.startsWith(vertical.get(columnNumber))) && wordToCheck.length() == size;
     }
 
-    private List<String> listOfWords(Integer column, List<String> wordList) {
+    private List<String> listOfPossibleWords(Integer column, List<String> wordList) {
         List<String> possibleWords = new ArrayList<>();
         for (String wordsFromList : wordList) {
             if (isWordCompatible(wordsFromList, column)) {

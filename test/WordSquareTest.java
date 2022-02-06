@@ -11,7 +11,7 @@ public class WordSquareTest {
     public void updateHorizontalTest() {
         WordSquares wordSquares = new WordSquares(4, "eeeeddoonnnsssrv");
         wordSquares.addWordToSquare("lols");
-        Assert.assertEquals("lols", wordSquares.getHorizontal().get(0));
+        Assert.assertEquals("lols", wordSquares.getRows().get(0));
     }
 
     @Test
@@ -20,9 +20,9 @@ public class WordSquareTest {
         wordSquares.addWordToSquare("lols");
         wordSquares.addWordToSquare("mops");
         wordSquares.updateWordBeginnings();
-        Assert.assertEquals("lm", wordSquares.getVertical().get(0));
-        Assert.assertEquals("oo", wordSquares.getVertical().get(1));
-        Assert.assertEquals("lp", wordSquares.getVertical().get(2));
+        Assert.assertEquals("lm", wordSquares.getColumns().get(0));
+        Assert.assertEquals("oo", wordSquares.getColumns().get(1));
+        Assert.assertEquals("lp", wordSquares.getColumns().get(2));
     }
 
     @Test

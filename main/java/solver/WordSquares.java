@@ -9,63 +9,65 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class WordSquares {
-    private final int size;
+    private final int letterSize;
     private final String letters;
 
-    private List<String> horizontal;
-    private List<String> vertical;
+    private List<String> rows;
+    private List<String> columns;
     private List<String> allWords;
 
     List<String> result = new LinkedList<>();
 
-    public List<String> getVertical() {
-        return vertical;
+    public List<String> getColumns() {
+        return columns;
     }
 
-    public List<String> getHorizontal() {
-        return horizontal;
+    public List<String> getRows() {
+        return rows;
     }
 
     public WordSquares(int size, String letters) {
-        this.letters = letters;
+        //this.letters = letters;
         allWords = readWordList(letters, size);
-        this.size = size;
-        this.horizontal = new ArrayList<>(size);
-        this.vertical = new ArrayList<>(size);
+        this.letterSize = size;
+        this.rows = new ArrayList<>(size);
+        this.columns = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            vertical.add(i, "");
+            columns.add(i, "");
         }
+        this.letters = letters;
+
     }
 //creates empty arrays when wordsquare object is created
     public List<String> chooseFirstWord() {
         for (String word : allWords) {
-            //     Integer columnNumber = 0;
             solver(0);
         }
         return result;
     }
 
     void solver(Integer columnNumber) {
-        if (horizontal.size() == size) {
+        if (rows.size() == letterSize) {
             if (lettersMatch(letters)) {
-                result = List.copyOf(horizontal);
+                result = List.copyOf(rows);
                 System.out.println(result);
             }
             return;
         }
+
 //returns when the arraylist is equal to the size
-        for (String filteredWord : listOfPossibleWords(columnNumber, allWords)) {
+        for (String filteredWord : listOfPossibleWords(columnNumber, allWords)) { //Make this for loop its own function?
             addWordToSquare(filteredWord);
             updateWordBeginnings();
             solver(columnNumber + 1);
-            horizontal.remove(horizontal.size() - 1);
+            rows.remove(rows.size() - 1);
             updateWordBeginnings();
         }
     }
     //filters the list of words
     private boolean lettersMatch(String initialString) {
         StringBuilder word = new StringBuilder();
-        for (String wor : horizontal) {
+        for (String wor : rows) {
             word.append(wor);
         }
         String[] initialStringArray = initialString.split("");
@@ -76,17 +78,17 @@ public class WordSquares {
     }
 //checks if the letters match starting letters
     public void updateWordBeginnings() {
-        for (int i = 0; i < size; i++) {
-            vertical.set(i, "");
+        for (int i = 0; i < letterSize; i++) {
+            columns.set(i, "");
         }
-        for (int j = 0; j < size; j++) {
-            for (int i = 0; i < horizontal.size(); i++) {
-                vertical.set(j, vertical.get(j) + String.valueOf(horizontal.get(i).charAt(j)));
+        for (int j = 0; j < letterSize; j++) {
+            for (int i = 0; i < rows.size(); i++) {
+                columns.set(j, columns.get(j) + String.valueOf(rows.get(i).charAt(j)));
             }
         }
     }
     public void addWordToSquare(String word) {
-        horizontal.add(word);
+        rows.add(word);
     }
 
     public static List<String> readWordList(String letters, int size) {
@@ -105,7 +107,7 @@ public class WordSquares {
     }
 
     public boolean isWordCompatible(String wordToCheck, Integer columnNumber) {
-        return (wordToCheck.startsWith(vertical.get(columnNumber))) && wordToCheck.length() == size;
+        return (wordToCheck.startsWith(columns.get(columnNumber)));
     }
 
     private List<String> listOfPossibleWords(Integer column, List<String> wordList) {
